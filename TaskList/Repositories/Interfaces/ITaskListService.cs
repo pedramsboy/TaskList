@@ -9,5 +9,7 @@ namespace TaskList.Repositories.Interfaces
         Task<TaskListDto> CreateTaskListAsync(CreateTaskListDto createDto);
         Task UpdateTaskListAsync(int id, UpdateTaskListDto updateDto);
         Task DeleteTaskListAsync(int id);
+        Task<string> UpdateTaskListImageAsync(int id, IFormFile imageFile);
+        Task RemoveTaskListImageAsync(int id);
     }
 }

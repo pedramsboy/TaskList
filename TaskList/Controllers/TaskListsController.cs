@@ -53,5 +53,70 @@ namespace TaskList.Controllers
             await _taskListService.DeleteTaskListAsync(id);
             return NoContent();
         }
+
+        [HttpPost("{id}/image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ImageUploadResponse>> UploadImage(int id, [FromForm] UploadImageDto uploadDto)
+        {
+            try
+            {
+                if (uploadDto?.Image == null)
+                {
+                    return BadRequest("No image file provided");
+                }
+
+                var imageUrl = await _taskListService.UpdateTaskListImageAsync(id, uploadDto.Image);
+                return Ok(new ImageUploadResponse { ImageUrl = imageUrl });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while uploading the image");
+            }
+        }
+
+        [HttpDelete("{id}/image")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RemoveImage(int id)
+        {
+            try
+            {
+                await _taskListService.RemoveTaskListImageAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while removing the image");
+            }
+        }
+        //[HttpPost("{id}/image")]
+        //public async Task<ActionResult<string>> UploadImage(int id, [FromForm] UploadImageDto uploadDto)
+        //{
+        //    var imageUrl = await _taskListService.UpdateTaskListImageAsync(id, uploadDto.Image);
+        //    return Ok(new { ImageUrl = imageUrl });
+        //}
+
+        //[HttpDelete("{id}/image")]
+        //public async Task<IActionResult> RemoveImage(int id)
+        //{
+        //    await _taskListService.RemoveTaskListImageAsync(id);
+        //    return NoContent();
+        //}
     }
 }

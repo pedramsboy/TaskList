@@ -7,6 +7,7 @@
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public string? ImagePath { get; set; }
 
         public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
     }
