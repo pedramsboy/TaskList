@@ -12,8 +12,8 @@ using TaskList.Data;
 namespace TaskList.Migrations
 {
     [DbContext(typeof(TaskDbContext))]
-    [Migration("20250402160800_init")]
-    partial class init
+    [Migration("20250402224301_AddImagePathToTaskList")]
+    partial class AddImagePathToTaskList
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,6 +79,9 @@ namespace TaskList.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
