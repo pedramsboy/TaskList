@@ -92,37 +92,60 @@ namespace TaskList.Repositories.Classes
 
             await _context.SaveChangesAsync();
         }
+
         public async Task<string> UpdateTaskListImageAsync(int id, IFormFile imageFile)
         {
             var taskList = await _context.TaskLists.FindAsync(id);
             if (taskList == null || taskList.IsDeleted)
-            {
                 throw new KeyNotFoundException("Task list not found");
-            }
 
-            try
+            // Delete old image if exists
+            if (!string.IsNullOrEmpty(taskList.ImagePath))
             {
-                // Delete old image if exists
-                if (!string.IsNullOrEmpty(taskList.ImagePath))
-                {
-                    await _fileStorageService.DeleteFileAsync(taskList.ImagePath, "tasklists");
-                }
-
-                // Save new image
-                var imagePath = await _fileStorageService.SaveFileAsync(imageFile, "tasklists");
-                taskList.ImagePath = imagePath;
-                taskList.UpdatedAt = DateTime.UtcNow;
-
-                await _context.SaveChangesAsync();
-
-                return _fileStorageService.GetFileUrl(imagePath, "tasklists");
+                await _fileStorageService.DeleteFileAsync(taskList.ImagePath, "tasklists");
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating task list image");
-                throw; // Re-throw for controller to handle
-            }
+
+            // Save new image to MEGA
+            var fileId = await _fileStorageService.SaveFileAsync(imageFile, "tasklists");
+            taskList.ImagePath = fileId;
+            taskList.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return _fileStorageService.GetFileUrl(fileId, "tasklists");
         }
+
+        //public async Task<string> UpdateTaskListImageAsync(int id, IFormFile imageFile)
+        //{
+        //    var taskList = await _context.TaskLists.FindAsync(id);
+        //    if (taskList == null || taskList.IsDeleted)
+        //    {
+        //        throw new KeyNotFoundException("Task list not found");
+        //    }
+
+        //    try
+        //    {
+        //        // Delete old image if exists
+        //        if (!string.IsNullOrEmpty(taskList.ImagePath))
+        //        {
+        //            await _fileStorageService.DeleteFileAsync(taskList.ImagePath, "tasklists");
+        //        }
+
+        //        // Save new image
+        //        var imagePath = await _fileStorageService.SaveFileAsync(imageFile, "tasklists");
+        //        taskList.ImagePath = imagePath;
+        //        taskList.UpdatedAt = DateTime.UtcNow;
+
+        //        await _context.SaveChangesAsync();
+
+        //        return _fileStorageService.GetFileUrl(imagePath, "tasklists");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error updating task list image");
+        //        throw; // Re-throw for controller to handle
+        //    }
+        //}
 
         public async Task RemoveTaskListImageAsync(int id)
         {

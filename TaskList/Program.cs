@@ -15,7 +15,8 @@ builder.Services.AddDbContext<TaskDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+builder.Services.AddScoped<IFileStorageService, MegaFileStorageService>();
+//builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<ITaskListService, TaskListService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 
@@ -44,27 +45,27 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Add static files middleware with security considerations
-var uploadsFolder = Path.Combine(builder.Environment.ContentRootPath, "Uploads");
-if (!Directory.Exists(uploadsFolder))
-{
-    Directory.CreateDirectory(uploadsFolder);
-}
+//var uploadsFolder = Path.Combine(builder.Environment.ContentRootPath, "Uploads");
+//if (!Directory.Exists(uploadsFolder))
+//{
+//    Directory.CreateDirectory(uploadsFolder);
+//}
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(uploadsFolder),
-    RequestPath = "/uploads",
-    // Security recommendation: set default cache control
-    OnPrepareResponse = ctx =>
-    {
-        ctx.Context.Response.Headers.Append(
-            "Cache-Control", "public,max-age=604800"); // 1 week cache
-    }
-});
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(uploadsFolder),
+//    RequestPath = "/uploads",
+//    // Security recommendation: set default cache control
+//    OnPrepareResponse = ctx =>
+//    {
+//        ctx.Context.Response.Headers.Append(
+//            "Cache-Control", "public,max-age=604800"); // 1 week cache
+//    }
+//});
 
 // Add file extension/content type mappings
-var provider = new FileExtensionContentTypeProvider();
-provider.Mappings[".webp"] = "image/webp"; // Add additional mappings if needed
+//var provider = new FileExtensionContentTypeProvider();
+//provider.Mappings[".webp"] = "image/webp"; // Add additional mappings if needed
 
 //app.UseStaticFiles(new StaticFileOptions
 //{
