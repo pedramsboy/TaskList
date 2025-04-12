@@ -23,45 +23,93 @@ namespace TaskList.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskItemDto>>> GetTasks(int listId,
             [FromQuery] string sortBy = "id",
-            [FromQuery] bool isAscending = true)
+            [FromQuery] bool isAscending = true,
+            CancellationToken cancellationToken = default)
         {
-            var tasks = await _taskService.GetTasksByListIdAsync(listId, sortBy, isAscending);
-            return Ok(tasks);
+            try
+            {
+                var tasks = await _taskService.GetTasksByListIdAsync(listId, sortBy, isAscending, cancellationToken);
+                return Ok(tasks);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpGet("{taskId}")]
-        public async Task<ActionResult<TaskItemDto>> GetTask(int listId, int taskId)
+        public async Task<ActionResult<TaskItemDto>> GetTask(int listId, int taskId, CancellationToken cancellationToken = default)
         {
-            var task = await _taskService.GetTaskByIdAsync(listId, taskId);
-            return Ok(task);
+            try
+            {
+                var task = await _taskService.GetTaskByIdAsync(listId, taskId, cancellationToken);
+                return Ok(task);
+            }
+
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<TaskItemDto>> CreateTask(int listId, CreateTaskItemDto createDto)
+        public async Task<ActionResult<TaskItemDto>> CreateTask(int listId, CreateTaskItemDto createDto, CancellationToken cancellationToken = default)
         {
-            var task = await _taskService.CreateTaskAsync(listId, createDto);
-            return CreatedAtAction(nameof(GetTask), new { listId, taskId = task.Id }, task);
+            try
+            {
+                var task = await _taskService.CreateTaskAsync(listId, createDto, cancellationToken);
+                return CreatedAtAction(nameof(GetTask), new { listId, taskId = task.Id }, task);
+            }
+
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPut("{taskId}")]
-        public async Task<IActionResult> UpdateTask(int listId, int taskId, UpdateTaskItemDto updateDto)
+        public async Task<IActionResult> UpdateTask(int listId, int taskId, UpdateTaskItemDto updateDto, CancellationToken cancellationToken = default)
         {
-            await _taskService.UpdateTaskAsync(listId, taskId, updateDto);
-            return NoContent();
+            try
+            {
+                await _taskService.UpdateTaskAsync(listId, taskId, updateDto, cancellationToken);
+                return NoContent();
+            }
+
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpDelete("{taskId}")]
-        public async Task<IActionResult> DeleteTask(int listId, int taskId)
+        public async Task<IActionResult> DeleteTask(int listId, int taskId, CancellationToken cancellationToken = default)
         {
-            await _taskService.DeleteTaskAsync(listId, taskId);
-            return NoContent();
+            try
+            {
+                await _taskService.DeleteTaskAsync(listId, taskId, cancellationToken);
+                return NoContent();
+            }
+
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPatch("{taskId}/complete")]
-        public async Task<IActionResult> MarkTaskAsDone(int listId, int taskId)
+        public async Task<IActionResult> MarkTaskAsDone(int listId, int taskId, CancellationToken cancellationToken = default)
         {
-            await _taskService.MarkTaskAsDoneAsync(listId, taskId);
-            return NoContent();
+            try
+            {
+                await _taskService.MarkTaskAsDoneAsync(listId, taskId, cancellationToken);
+                return NoContent();
+            }
+
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpGet("search")]
@@ -69,9 +117,11 @@ namespace TaskList.Controllers
             int? listId,
             [FromQuery] string searchTerm = null,
             [FromQuery] Priority? priority = null,
-            [FromQuery] bool? isCompleted = null)
+            [FromQuery] bool? isCompleted = null,
+            CancellationToken cancellationToken = default)
         {
-            var tasks = await _taskService.SearchTasksAsync(listId, searchTerm, priority, isCompleted);
+
+            var tasks = await _taskService.SearchTasksAsync(listId, searchTerm, priority, isCompleted, cancellationToken);
             return Ok(tasks);
         }
     }

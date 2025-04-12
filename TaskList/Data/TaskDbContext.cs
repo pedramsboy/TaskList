@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using TaskList.Data.TaskItems;
+using TaskList.Data.TaskLists;
 using TaskList.Models.Domain;
 
 namespace TaskList.Data
@@ -13,11 +15,8 @@ namespace TaskList.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TaskItem>()
-                .HasOne(t => t.TaskList)
-                .WithMany(l => l.Tasks)
-                .HasForeignKey(t => t.TaskListId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.ConfigureTaskListModelBuilder();
+            modelBuilder.ConfigureTaskItemModelBuilder();
         }
     }
 }
