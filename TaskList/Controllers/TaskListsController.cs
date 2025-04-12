@@ -20,38 +20,60 @@ namespace TaskList.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskListDto>>> GetAllTaskLists()
+        public async Task<ActionResult<IEnumerable<TaskListDto>>> GetAllTaskLists(CancellationToken cancellationToken)
         {
-            var taskLists = await _taskListService.GetAllTaskListsAsync();
+            var taskLists = await _taskListService.GetAllTaskListsAsync(cancellationToken);
             return Ok(taskLists);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskListDto>> GetTaskList(int id)
+        public async Task<ActionResult<TaskListDto>> GetTaskList(int id, CancellationToken cancellationToken)
         {
-            var taskList = await _taskListService.GetTaskListByIdAsync(id);
-            return Ok(taskList);
+            try
+            {
+                var taskList = await _taskListService.GetTaskListByIdAsync(id, cancellationToken);
+                return Ok(taskList);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<TaskListDto>> CreateTaskList(CreateTaskListDto createDto)
+        public async Task<ActionResult<TaskListDto>> CreateTaskList(CreateTaskListDto createDto, CancellationToken cancellationToken)
         {
-            var taskList = await _taskListService.CreateTaskListAsync(createDto);
+            var taskList = await _taskListService.CreateTaskListAsync(createDto, cancellationToken);
             return CreatedAtAction(nameof(GetTaskList), new { id = taskList.Id }, taskList);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTaskList(int id, UpdateTaskListDto updateDto)
+        public async Task<IActionResult> UpdateTaskList(int id, UpdateTaskListDto updateDto, CancellationToken cancellationToken)
         {
-            await _taskListService.UpdateTaskListAsync(id, updateDto);
-            return NoContent();
+            try
+            {
+                await _taskListService.UpdateTaskListAsync(id, updateDto, cancellationToken);
+                return NoContent();
+            }
+
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTaskList(int id)
+        public async Task<IActionResult> DeleteTaskList(int id, CancellationToken cancellationToken)
         {
-            await _taskListService.DeleteTaskListAsync(id);
-            return NoContent();
+            try
+            {
+                await _taskListService.DeleteTaskListAsync(id, cancellationToken);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost("{id}/image")]
@@ -59,7 +81,7 @@ namespace TaskList.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<ImageUploadResponse>> UploadImage(int id, [FromForm] UploadImageDto uploadDto)
+        public async Task<ActionResult<ImageUploadResponse>> UploadImage(int id, [FromForm] UploadImageDto uploadDto, CancellationToken cancellationToken)
         {
             try
             {
@@ -68,7 +90,7 @@ namespace TaskList.Controllers
                     return BadRequest("No image file provided");
                 }
 
-                var imageUrl = await _taskListService.UpdateTaskListImageAsync(id, uploadDto.Image);
+                var imageUrl = await _taskListService.UpdateTaskListImageAsync(id, uploadDto.Image, cancellationToken);
                 return Ok(new ImageUploadResponse { ImageUrl = imageUrl });
             }
             catch (KeyNotFoundException ex)
@@ -89,11 +111,11 @@ namespace TaskList.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RemoveImage(int id)
+        public async Task<IActionResult> RemoveImage(int id, CancellationToken cancellationToken)
         {
             try
             {
-                await _taskListService.RemoveTaskListImageAsync(id);
+                await _taskListService.RemoveTaskListImageAsync(id, cancellationToken);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)

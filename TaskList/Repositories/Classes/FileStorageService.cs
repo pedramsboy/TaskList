@@ -19,7 +19,7 @@ namespace TaskList.Repositories.Classes
             _logger = logger;
         }
 
-        public async Task<string> SaveFileAsync(IFormFile file, string containerName)
+        public async Task<string> SaveFileAsync(IFormFile file, string containerName, CancellationToken cancellationToken = default)
         {
             // Validate file
             ValidateFile(file);
@@ -40,7 +40,7 @@ namespace TaskList.Repositories.Classes
                 // Save file
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await file.CopyToAsync(stream);
+                    await file.CopyToAsync(stream, cancellationToken);
                 }
 
                 // Return relative path
@@ -81,7 +81,7 @@ namespace TaskList.Repositories.Classes
             }
         }
 
-        public async Task DeleteFileAsync(string filePath, string containerName)
+        public async Task DeleteFileAsync(string filePath, string containerName, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(filePath)) return;
 
@@ -90,7 +90,10 @@ namespace TaskList.Repositories.Classes
                 var fullPath = Path.Combine(_env.ContentRootPath, "Uploads", filePath);
                 if (File.Exists(fullPath))
                 {
-                    File.Delete(fullPath);
+                    // File.Delete(fullPath);
+
+                    // Delete file asynchronously with cancellation support
+                    await Task.Run(() => File.Delete(fullPath), cancellationToken);
                 }
             }
             catch (Exception ex)

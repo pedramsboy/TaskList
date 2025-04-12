@@ -20,15 +20,18 @@ namespace TaskList.Repositories.Classes
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<TaskItemDto>> GetTasksByListIdAsync(int listId, string sortBy, bool isAscending)
+        public async Task<IEnumerable<TaskItemDto>> GetTasksByListIdAsync(int listId, string sortBy, bool isAscending, CancellationToken cancellationToken = default)
         {
+            // Check if task list exists (still needs tracking for existence check)
             var taskList = await _context.TaskLists
-                .FirstOrDefaultAsync(tl => tl.Id == listId && !tl.IsDeleted);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(tl => tl.Id == listId && !tl.IsDeleted, cancellationToken);
 
             if (taskList == null)
                 throw new KeyNotFoundException("Task list not found");
 
             var query = _context.Tasks
+                .AsNoTracking()
                 .Where(t => t.TaskListId == listId && !t.IsDeleted)
                 .AsQueryable();
 
@@ -42,14 +45,15 @@ namespace TaskList.Repositories.Classes
                 _ => isAscending ? query.OrderBy(t => t.Id) : query.OrderByDescending(t => t.Id)
             };
 
-            var tasks = await query.ToListAsync();
+            var tasks = await query.ToListAsync(cancellationToken);
             return _mapper.Map<IEnumerable<TaskItemDto>>(tasks);
         }
 
-        public async Task<TaskItemDto> GetTaskByIdAsync(int listId, int taskId)
+        public async Task<TaskItemDto> GetTaskByIdAsync(int listId, int taskId, CancellationToken cancellationToken = default)
         {
             var task = await _context.Tasks
-                .FirstOrDefaultAsync(t => t.Id == taskId && t.TaskListId == listId && !t.IsDeleted);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == taskId && t.TaskListId == listId && !t.IsDeleted, cancellationToken);
 
             if (task == null)
                 throw new KeyNotFoundException("Task not found");
@@ -57,10 +61,10 @@ namespace TaskList.Repositories.Classes
             return _mapper.Map<TaskItemDto>(task);
         }
 
-        public async Task<TaskItemDto> CreateTaskAsync(int listId, CreateTaskItemDto createDto)
+        public async Task<TaskItemDto> CreateTaskAsync(int listId, CreateTaskItemDto createDto, CancellationToken cancellationToken = default)
         {
             var taskList = await _context.TaskLists
-                .FirstOrDefaultAsync(tl => tl.Id == listId && !tl.IsDeleted);
+                .FirstOrDefaultAsync(tl => tl.Id == listId && !tl.IsDeleted, cancellationToken);
 
             if (taskList == null)
                 throw new KeyNotFoundException("Task list not found");
@@ -69,15 +73,15 @@ namespace TaskList.Repositories.Classes
             task.TaskListId = listId;
 
             _context.Tasks.Add(task);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return _mapper.Map<TaskItemDto>(task);
         }
 
-        public async Task UpdateTaskAsync(int listId, int taskId, UpdateTaskItemDto updateDto)
+        public async Task UpdateTaskAsync(int listId, int taskId, UpdateTaskItemDto updateDto, CancellationToken cancellationToken = default)
         {
             var task = await _context.Tasks
-                .FirstOrDefaultAsync(t => t.Id == taskId && t.TaskListId == listId && !t.IsDeleted);
+                .FirstOrDefaultAsync(t => t.Id == taskId && t.TaskListId == listId && !t.IsDeleted, cancellationToken);
 
             if (task == null)
                 throw new KeyNotFoundException("Task not found");
@@ -88,13 +92,13 @@ namespace TaskList.Repositories.Classes
             _mapper.Map(updateDto, task);
             task.UpdatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteTaskAsync(int listId, int taskId)
+        public async Task DeleteTaskAsync(int listId, int taskId, CancellationToken cancellationToken = default)
         {
             var task = await _context.Tasks
-                .FirstOrDefaultAsync(t => t.Id == taskId && t.TaskListId == listId && !t.IsDeleted);
+                .FirstOrDefaultAsync(t => t.Id == taskId && t.TaskListId == listId && !t.IsDeleted, cancellationToken);
 
             if (task == null)
                 throw new KeyNotFoundException("Task not found");
@@ -102,13 +106,13 @@ namespace TaskList.Repositories.Classes
             task.IsDeleted = true;
             task.UpdatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task MarkTaskAsDoneAsync(int listId, int taskId)
+        public async Task MarkTaskAsDoneAsync(int listId, int taskId, CancellationToken cancellationToken = default)
         {
             var task = await _context.Tasks
-                .FirstOrDefaultAsync(t => t.Id == taskId && t.TaskListId == listId && !t.IsDeleted);
+                .FirstOrDefaultAsync(t => t.Id == taskId && t.TaskListId == listId && !t.IsDeleted, cancellationToken);
 
             if (task == null)
                 throw new KeyNotFoundException("Task not found");
@@ -116,12 +120,13 @@ namespace TaskList.Repositories.Classes
             task.IsCompleted = true;
             task.UpdatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<TaskItemDto>> SearchTasksAsync(int? listId, string searchTerm, Priority? priority, bool? isCompleted)
+        public async Task<IEnumerable<TaskItemDto>> SearchTasksAsync(int? listId, string searchTerm, Priority? priority, bool? isCompleted, CancellationToken cancellationToken = default)
         {
             var query = _context.Tasks
+                .AsNoTracking()
                 .Where(t => !t.IsDeleted)
                 .AsQueryable();
 
@@ -147,7 +152,7 @@ namespace TaskList.Repositories.Classes
                 query = query.Where(t => t.IsCompleted == isCompleted.Value);
             }
 
-            var tasks = await query.ToListAsync();
+            var tasks = await query.ToListAsync(cancellationToken);
             return _mapper.Map<IEnumerable<TaskItemDto>>(tasks);
         }
     }
