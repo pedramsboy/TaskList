@@ -29,15 +29,10 @@ namespace TaskList.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskListDto>> GetTaskList(int id, CancellationToken cancellationToken)
         {
-            try
-            {
-                var taskList = await _taskListService.GetTaskListByIdAsync(id, cancellationToken);
-                return Ok(taskList);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+
+            var taskList = await _taskListService.GetTaskListByIdAsync(id, cancellationToken);
+            return Ok(taskList);
+
         }
 
         [HttpPost]
@@ -50,30 +45,19 @@ namespace TaskList.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTaskList(int id, UpdateTaskListDto updateDto, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _taskListService.UpdateTaskListAsync(id, updateDto, cancellationToken);
-                return NoContent();
-            }
 
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _taskListService.UpdateTaskListAsync(id, updateDto, cancellationToken);
+            return NoContent();
+
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaskList(int id, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _taskListService.DeleteTaskListAsync(id, cancellationToken);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+
+            await _taskListService.DeleteTaskListAsync(id, cancellationToken);
+            return NoContent();
+
         }
 
         [HttpPost("{id}/image")]
