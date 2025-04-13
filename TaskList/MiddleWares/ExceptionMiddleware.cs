@@ -1,19 +1,16 @@
 ﻿using System.Text.Json;
 
-public class ApiExceptionMiddleware
+public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<ApiExceptionMiddleware> _logger;
-    private readonly IHostEnvironment _env;
+    private readonly ILogger<ExceptionMiddleware> _logger;
 
-    public ApiExceptionMiddleware(
+    public ExceptionMiddleware(
         RequestDelegate next,
-        ILogger<ApiExceptionMiddleware> logger,
-        IHostEnvironment env)
+        ILogger<ExceptionMiddleware> logger)
     {
         _next = next;
         _logger = logger;
-        _env = env;
     }
 
     public async Task InvokeAsync(HttpContext context)
