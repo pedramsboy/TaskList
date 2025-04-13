@@ -1,7 +1,7 @@
-﻿using static TaskList.Models.Domain.TaskItem;
-using TaskList.Models.DTO;
+﻿using static TaskList.Domain.Entity.TaskItem;
+using TaskList.Domain.DTO;
 
-namespace TaskList.Repositories.Interfaces
+namespace TaskList.Application.Interfaces
 {
     public interface ITaskService
     {

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TaskList.Models.DTO;
-using TaskList.Repositories.Interfaces;
+using TaskList.Application.Interfaces;
+using TaskList.Domain.DTO;
+using TaskList.Domain.RepositoryInerfaces;
 
 namespace TaskList.Controllers
 {
@@ -29,10 +30,8 @@ namespace TaskList.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskListDto>> GetTaskList(int id, CancellationToken cancellationToken)
         {
-
             var taskList = await _taskListService.GetTaskListByIdAsync(id, cancellationToken);
             return Ok(taskList);
-
         }
 
         [HttpPost]
@@ -45,19 +44,15 @@ namespace TaskList.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTaskList(int id, UpdateTaskListDto updateDto, CancellationToken cancellationToken)
         {
-
             await _taskListService.UpdateTaskListAsync(id, updateDto, cancellationToken);
             return NoContent();
-
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaskList(int id, CancellationToken cancellationToken)
         {
-
             await _taskListService.DeleteTaskListAsync(id, cancellationToken);
             return NoContent();
-
         }
 
         [HttpPost("{id}/image")]
@@ -111,18 +106,6 @@ namespace TaskList.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while removing the image");
             }
         }
-        //[HttpPost("{id}/image")]
-        //public async Task<ActionResult<string>> UploadImage(int id, [FromForm] UploadImageDto uploadDto)
-        //{
-        //    var imageUrl = await _taskListService.UpdateTaskListImageAsync(id, uploadDto.Image);
-        //    return Ok(new { ImageUrl = imageUrl });
-        //}
-
-        //[HttpDelete("{id}/image")]
-        //public async Task<IActionResult> RemoveImage(int id)
-        //{
-        //    await _taskListService.RemoveTaskListImageAsync(id);
-        //    return NoContent();
-        //}
     }
 }
+

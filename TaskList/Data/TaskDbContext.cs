@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using TaskList.Data.TaskItems;
-using TaskList.Data.TaskLists;
-using TaskList.Models.Domain;
+using TaskList.Data.EntityConfigs;
+using TaskList.Domain.Entity;
 
 namespace TaskList.Data
 {
@@ -10,7 +9,7 @@ namespace TaskList.Data
     {
         public TaskDbContext(DbContextOptions<TaskDbContext> options) : base(options) { }
 
-        public DbSet<TaskList.Models.Domain.TaskList> TaskLists { get; set; }
+        public DbSet<TaskList.Domain.Entity.TaskList> TaskLists { get; set; }
         public DbSet<TaskItem> Tasks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Reflection.Emit;
-using TaskList.Models.Domain;
+using TaskList.Domain.Entity;
 
-namespace TaskList.Data.TaskItems
+namespace TaskList.Data.EntityConfigs
 {
     public static class TaskItemModelBuilderConfiguration
     {

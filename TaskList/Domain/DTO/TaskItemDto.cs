@@ -1,6 +1,6 @@
-﻿using static TaskList.Models.Domain.TaskItem;
+﻿using static TaskList.Domain.Entity.TaskItem;
 
-namespace TaskList.Models.DTO
+namespace TaskList.Domain.DTO
 {
     public class TaskItemDto
     {

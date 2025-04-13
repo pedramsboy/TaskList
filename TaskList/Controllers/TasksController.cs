@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static TaskList.Models.Domain.TaskItem;
-using TaskList.Models.DTO;
-using TaskList.Repositories.Interfaces;
+using static TaskList.Domain.Entity.TaskItem;
+using TaskList.Domain.DTO;
+using TaskList.Domain.RepositoryInerfaces;
+using TaskList.Application.Interfaces;
 
 namespace TaskList.Controllers
 {

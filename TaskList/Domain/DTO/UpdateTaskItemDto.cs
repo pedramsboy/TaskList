@@ -1,7 +1,7 @@
-﻿using static TaskList.Models.Domain.TaskItem;
+﻿using static TaskList.Domain.Entity.TaskItem;
 using System.ComponentModel.DataAnnotations;
 
-namespace TaskList.Models.DTO
+namespace TaskList.Domain.DTO
 {
     public class UpdateTaskItemDto
     {

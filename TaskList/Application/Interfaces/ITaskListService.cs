@@ -1,6 +1,6 @@
-﻿using TaskList.Models.DTO;
+﻿using TaskList.Domain.DTO;
 
-namespace TaskList.Repositories.Interfaces
+namespace TaskList.Application.Interfaces
 {
     public interface ITaskListService
     {

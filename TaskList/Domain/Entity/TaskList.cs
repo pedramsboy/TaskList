@@ -1,4 +1,4 @@
-﻿namespace TaskList.Models.Domain
+﻿namespace TaskList.Domain.Entity
 {
     public class TaskList
     {

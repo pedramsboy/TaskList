@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TaskList.CustomActionFilters;
 
-namespace TaskList.Models.DTO
+namespace TaskList.Domain.DTO
 {
     public class UploadImageDto
     {

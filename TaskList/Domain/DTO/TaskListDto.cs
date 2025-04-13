@@ -1,4 +1,4 @@
-﻿namespace TaskList.Models.DTO
+﻿namespace TaskList.Domain.DTO
 {
     public class TaskListDto
     {
