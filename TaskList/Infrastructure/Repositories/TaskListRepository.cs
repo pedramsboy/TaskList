@@ -40,7 +40,7 @@ namespace TaskList.Repositories.Classes
         public async Task UpdateAsync(TaskList.Domain.Entity.TaskList entity, CancellationToken cancellationToken = default)
         {
             entity.UpdatedAt = DateTime.UtcNow;
-            _context.TaskLists.Update(entity);
+
             await _context.SaveChangesAsync(cancellationToken);
         }
 
@@ -55,7 +55,7 @@ namespace TaskList.Repositories.Classes
                 task.UpdatedAt = DateTime.UtcNow;
             }
 
-            await UpdateAsync(entity, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace TaskList.Application.Interfaces
 {
-    public interface ITaskListService
+    public interface ITaskListApplicationService
     {
         Task<IEnumerable<TaskListDto>> GetAllTaskListsAsync(CancellationToken cancellationToken = default);
         Task<TaskListDto> GetTaskListByIdAsync(int id, CancellationToken cancellationToken = default);

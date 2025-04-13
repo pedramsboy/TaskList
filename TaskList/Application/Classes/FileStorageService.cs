@@ -1,6 +1,6 @@
-﻿using TaskList.Repositories.Interfaces;
+﻿using TaskList.Application.Interfaces;
 
-namespace TaskList.Repositories.Classes
+namespace TaskList.Application.Classes
 {
     public class FileStorageService : IFileStorageService
     {

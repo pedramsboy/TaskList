@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TaskList.CustomActionFilters
+namespace TaskList.Presentation.CustomActionFilters
 {
     // Extensions/AllowedExtensionsAttribute.cs
     public class AllowedExtensionsAttribute : ValidationAttribute

@@ -5,16 +5,16 @@ using TaskList.Application.Interfaces;
 using TaskList.Domain.DTO;
 using TaskList.Domain.RepositoryInerfaces;
 
-namespace TaskList.Controllers
+namespace TaskList.Presentation.Controllers
 {
     [ApiController]
     [Route("api/tasklists")]
     public class TaskListsController : ControllerBase
     {
-        private readonly ITaskListService _taskListService;
+        private readonly ITaskListApplicationService _taskListService;
         private readonly IMapper _mapper;
 
-        public TaskListsController(ITaskListService taskListService, IMapper mapper)
+        public TaskListsController(ITaskListApplicationService taskListService, IMapper mapper)
         {
             _taskListService = taskListService;
             _mapper = mapper;
@@ -56,10 +56,6 @@ namespace TaskList.Controllers
         }
 
         [HttpPost("{id}/image")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<ImageUploadResponse>> UploadImage(int id, [FromForm] UploadImageDto uploadDto, CancellationToken cancellationToken)
         {
             try
@@ -87,9 +83,6 @@ namespace TaskList.Controllers
         }
 
         [HttpDelete("{id}/image")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RemoveImage(int id, CancellationToken cancellationToken)
         {
             try

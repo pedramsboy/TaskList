@@ -2,22 +2,21 @@
 using TaskList.Application.Interfaces;
 using TaskList.Domain.DTO;
 using TaskList.Domain.RepositoryInerfaces;
-using TaskList.Repositories.Interfaces;
 
 namespace TaskList.Application.Classes
 {
-    public class TaskListService : ITaskListService
+    public class TaskListApplicationService : ITaskListApplicationService
     {
         private readonly ITaskListRepository _repository;
         private readonly IMapper _mapper;
         private readonly IFileStorageService _fileStorageService;
-        private readonly ILogger<TaskListService> _logger;
+        private readonly ILogger<TaskListApplicationService> _logger;
 
-        public TaskListService(
+        public TaskListApplicationService(
             ITaskListRepository repository,
             IMapper mapper,
             IFileStorageService fileStorageService,
-            ILogger<TaskListService> logger)
+            ILogger<TaskListApplicationService> logger)
         {
             _repository = repository;
             _mapper = mapper;
@@ -82,26 +81,18 @@ namespace TaskList.Application.Classes
             if (taskList == null)
                 throw new KeyNotFoundException("Task list not found");
 
-            try
+            // Delete old image if exists
+            if (!string.IsNullOrEmpty(taskList.ImagePath))
             {
-                // Delete old image if exists
-                if (!string.IsNullOrEmpty(taskList.ImagePath))
-                {
-                    await _fileStorageService.DeleteFileAsync(taskList.ImagePath, "tasklists", cancellationToken);
-                }
-
-                // Save new image
-                var imagePath = await _fileStorageService.SaveFileAsync(imageFile, "tasklists", cancellationToken);
-                taskList.ImagePath = imagePath;
-                await _repository.UpdateAsync(taskList, cancellationToken);
-
-                return _fileStorageService.GetFileUrl(imagePath, "tasklists");
+                await _fileStorageService.DeleteFileAsync(taskList.ImagePath, "tasklists", cancellationToken);
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating task list image");
-                throw;
-            }
+
+            // Save new image
+            var imagePath = await _fileStorageService.SaveFileAsync(imageFile, "tasklists", cancellationToken);
+            taskList.ImagePath = imagePath;
+            await _repository.UpdateAsync(taskList, cancellationToken);
+
+            return _fileStorageService.GetFileUrl(imagePath, "tasklists");
         }
 
         public async Task RemoveTaskListImageAsync(int id, CancellationToken cancellationToken = default)

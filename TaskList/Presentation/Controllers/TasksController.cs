@@ -6,16 +6,16 @@ using TaskList.Domain.DTO;
 using TaskList.Domain.RepositoryInerfaces;
 using TaskList.Application.Interfaces;
 
-namespace TaskList.Controllers
+namespace TaskList.Presentation.Controllers
 {
     [ApiController]
     [Route("api/tasklists/{listId}/tasks")]
     public class TasksController : ControllerBase
     {
-        private readonly ITaskService _taskService;
+        private readonly ITaskApplicationService _taskService;
         private readonly IMapper _mapper;
 
-        public TasksController(ITaskService taskService, IMapper mapper)
+        public TasksController(ITaskApplicationService taskService, IMapper mapper)
         {
             _taskService = taskService;
             _mapper = mapper;

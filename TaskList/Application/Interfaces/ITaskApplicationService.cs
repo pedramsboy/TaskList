@@ -3,7 +3,7 @@ using TaskList.Domain.DTO;
 
 namespace TaskList.Application.Interfaces
 {
-    public interface ITaskService
+    public interface ITaskApplicationService
     {
         Task<IEnumerable<TaskItemDto>> GetTasksByListIdAsync(int listId, string sortBy, bool isAscending, CancellationToken cancellationToken = default);
         Task<TaskItemDto> GetTaskByIdAsync(int listId, int taskId, CancellationToken cancellationToken = default);

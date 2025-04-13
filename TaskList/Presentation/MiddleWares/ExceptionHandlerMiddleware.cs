@@ -1,13 +1,13 @@
 ﻿using System.Text.Json;
 
-public class ExceptionMiddleware
+public class ExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionMiddleware> _logger;
+    private readonly ILogger<ExceptionHandlerMiddleware> _logger;
 
-    public ExceptionMiddleware(
+    public ExceptionHandlerMiddleware(
         RequestDelegate next,
-        ILogger<ExceptionMiddleware> logger)
+        ILogger<ExceptionHandlerMiddleware> logger)
     {
         _next = next;
         _logger = logger;
@@ -21,6 +21,8 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Unhandled Exception!");
+
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -46,8 +48,6 @@ public class ExceptionMiddleware
             Type = ex.GetType().Name,
             Detail = ex.Message
         };
-
-        _logger.LogError(ex, "API Error: {Message}", ex.Message);
 
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }

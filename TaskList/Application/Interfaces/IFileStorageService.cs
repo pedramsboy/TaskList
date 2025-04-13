@@ -1,4 +1,4 @@
-﻿namespace TaskList.Repositories.Interfaces
+﻿namespace TaskList.Application.Interfaces
 {
     public interface IFileStorageService
     {

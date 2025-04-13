@@ -4,17 +4,17 @@ using TaskList.Application.Interfaces;
 using TaskList.Domain.DTO;
 using TaskList.Domain.Entity;
 using TaskList.Domain.RepositoryInerfaces;
-using static TaskList.Domain.ITaskRepository;
+using TaskList.Domain;
 
 namespace TaskList.Application.Classes
 {
-    public class TaskService : ITaskService
+    public class TaskApplicationService : ITaskApplicationService
     {
         private readonly ITaskRepository _taskRepository;
         private readonly ITaskListRepository _taskListRepository;
         private readonly IMapper _mapper;
 
-        public TaskService(
+        public TaskApplicationService(
             ITaskRepository taskRepository,
             ITaskListRepository taskListRepository,
             IMapper mapper)
