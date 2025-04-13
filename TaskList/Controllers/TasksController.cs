@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using static TaskList.Models.Domain.TaskItem;
 using TaskList.Models.DTO;
 using TaskList.Repositories.Interfaces;
+using TaskList.Models.Enum;
 
 namespace TaskList.Controllers
 {
@@ -22,12 +23,12 @@ namespace TaskList.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskItemDto>>> GetTasks(int listId,
-            [FromQuery] string sortBy = "id",
+            [FromQuery] TaskSortEnum sortBy = TaskSortEnum.Id,
             [FromQuery] bool isAscending = true,
             CancellationToken cancellationToken = default)
         {
 
-            var tasks = await _taskService.GetTasksByListIdAsync(listId, sortBy, isAscending, cancellationToken);
+            var tasks = await _taskService.GetAllByListIdAsync(listId, sortBy, isAscending, cancellationToken);
             return Ok(tasks);
 
         }
@@ -36,7 +37,7 @@ namespace TaskList.Controllers
         public async Task<ActionResult<TaskItemDto>> GetTask(int listId, int taskId, CancellationToken cancellationToken = default)
         {
 
-            var task = await _taskService.GetTaskByIdAsync(listId, taskId, cancellationToken);
+            var task = await _taskService.GetByIdAsync(listId, taskId, cancellationToken);
             return Ok(task);
 
         }
@@ -45,7 +46,7 @@ namespace TaskList.Controllers
         public async Task<ActionResult<TaskItemDto>> CreateTask(int listId, CreateTaskItemDto createDto, CancellationToken cancellationToken = default)
         {
 
-            var task = await _taskService.CreateTaskAsync(listId, createDto, cancellationToken);
+            var task = await _taskService.CreateAsync(listId, createDto, cancellationToken);
             return CreatedAtAction(nameof(GetTask), new { listId, taskId = task.Id }, task);
 
         }
@@ -54,7 +55,7 @@ namespace TaskList.Controllers
         public async Task<IActionResult> UpdateTask(int listId, int taskId, UpdateTaskItemDto updateDto, CancellationToken cancellationToken = default)
         {
 
-            await _taskService.UpdateTaskAsync(listId, taskId, updateDto, cancellationToken);
+            await _taskService.UpdateAsync(listId, taskId, updateDto, cancellationToken);
             return NoContent();
 
         }
@@ -63,16 +64,16 @@ namespace TaskList.Controllers
         public async Task<IActionResult> DeleteTask(int listId, int taskId, CancellationToken cancellationToken = default)
         {
 
-            await _taskService.DeleteTaskAsync(listId, taskId, cancellationToken);
+            await _taskService.DeleteAsync(listId, taskId, cancellationToken);
             return NoContent();
 
         }
 
-        [HttpPatch("{taskId}/complete")]
+        [HttpPatch("{taskId}/done")]
         public async Task<IActionResult> MarkTaskAsDone(int listId, int taskId, CancellationToken cancellationToken = default)
         {
 
-            await _taskService.MarkTaskAsDoneAsync(listId, taskId, cancellationToken);
+            await _taskService.MarkAsDoneAsync(listId, taskId, cancellationToken);
             return NoContent();
 
         }
@@ -86,7 +87,7 @@ namespace TaskList.Controllers
             CancellationToken cancellationToken = default)
         {
 
-            var tasks = await _taskService.SearchTasksAsync(listId, searchTerm, priority, isCompleted, cancellationToken);
+            var tasks = await _taskService.SearchAsync(listId, searchTerm, priority, isCompleted, cancellationToken);
             return Ok(tasks);
         }
     }

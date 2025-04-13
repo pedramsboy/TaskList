@@ -1,4 +1,5 @@
-﻿using static TaskList.Models.Domain.TaskItem;
+﻿using TaskList.Models.Enum;
+using static TaskList.Models.Domain.TaskItem;
 
 namespace TaskList.Models.DTO
 {
@@ -10,7 +11,7 @@ namespace TaskList.Models.DTO
         public DateTime CreatedAt { get; set; }
         public DateTime? DueDate { get; set; }
         public Priority Priorities { get; set; }
-        public bool IsCompleted { get; set; }
+        public bool IsDone { get; set; }
         public int TaskListId { get; set; }
     }
 }

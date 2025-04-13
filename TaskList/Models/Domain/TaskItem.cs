@@ -1,4 +1,6 @@
-﻿namespace TaskList.Models.Domain
+﻿using TaskList.Models.Enum;
+
+namespace TaskList.Models.Domain
 {
     public class TaskItem
     {
@@ -11,18 +13,13 @@
 
         public Priority Priorities { get; set; } = Priority.Medium;
 
-        public bool IsCompleted { get; set; } = false;
+        public bool IsDone { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
 
         //////Navigation Properties//////
         public int TaskListId { get; set; }
         public TaskList TaskList { get; set; }
 
-        public enum Priority
-        {
-            Low,
-            Medium,
-            High
-        }
+
     }
 }

@@ -23,16 +23,14 @@ namespace TaskList.Data.TaskItems
 
             builder.Entity<TaskItem>()
             .Property(t => t.Title)
-            .IsUnicode(true)
             .IsRequired()
-            .IsUnicode()
-            .HasMaxLength(255);
+            .IsUnicode(true)
+            .HasMaxLength(100);
 
             builder.Entity<TaskItem>()
                 .Property(t => t.Description)
-                .HasColumnType("Nvarchar(500)")
-                .IsRequired()
-                .IsUnicode();
+                .IsUnicode(true)
+            .HasMaxLength(500);
         }
     }
 }
