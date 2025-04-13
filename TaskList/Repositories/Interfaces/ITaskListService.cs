@@ -4,12 +4,12 @@ namespace TaskList.Repositories.Interfaces
 {
     public interface ITaskListService
     {
-        Task<IEnumerable<TaskListDto>> GetAllTaskListsAsync(CancellationToken cancellationToken = default);
-        Task<TaskListDto> GetTaskListByIdAsync(int id, CancellationToken cancellationToken = default);
-        Task<TaskListDto> CreateTaskListAsync(CreateTaskListDto createDto, CancellationToken cancellationToken = default);
-        Task UpdateTaskListAsync(int id, UpdateTaskListDto updateDto, CancellationToken cancellationToken = default);
-        Task DeleteTaskListAsync(int id, CancellationToken cancellationToken = default);
-        Task<string> UpdateTaskListImageAsync(int id, IFormFile imageFile, CancellationToken cancellationToken = default);
-        Task RemoveTaskListImageAsync(int id, CancellationToken cancellationToken = default);
+        Task<IEnumerable<TaskListDto>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<TaskListDto> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+        Task<TaskListDto> CreateAsync(CreateTaskListDto createDto, CancellationToken cancellationToken = default);
+        Task UpdateAsync(int id, UpdateTaskListDto updateDto, CancellationToken cancellationToken = default);
+        Task DeleteAsync(int id, CancellationToken cancellationToken = default);
+        Task<string> UpdateImageAsync(int id, IFormFile imageFile, CancellationToken cancellationToken = default);
+        Task RemoveImageAsync(int id, CancellationToken cancellationToken = default);
     }
 }

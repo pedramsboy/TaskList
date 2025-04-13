@@ -21,11 +21,10 @@ namespace TaskList.Repositories.Classes
             _logger = logger;
         }
 
-        public async Task<IEnumerable<TaskListDto>> GetAllTaskListsAsync(CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<TaskListDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var taskLists = await _context.TaskLists
                 .AsNoTracking()
-                .Where(tl => !tl.IsDeleted)
                 .Include(tl => tl.Tasks)
                 .ToListAsync(cancellationToken);
 
@@ -40,12 +39,12 @@ namespace TaskList.Repositories.Classes
             return taskListDtos;
         }
 
-        public async Task<TaskListDto> GetTaskListByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<TaskListDto> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
             var taskList = await _context.TaskLists
                 .AsNoTracking()
                 .Include(tl => tl.Tasks)
-                .FirstOrDefaultAsync(tl => tl.Id == id && !tl.IsDeleted, cancellationToken);
+                .FirstOrDefaultAsync(tl => tl.Id == id, cancellationToken);
 
             if (taskList == null)
                 throw new KeyNotFoundException("Task list not found");
@@ -55,7 +54,7 @@ namespace TaskList.Repositories.Classes
             return dto;
         }
 
-        public async Task<TaskListDto> CreateTaskListAsync(CreateTaskListDto createDto, CancellationToken cancellationToken = default)
+        public async Task<TaskListDto> CreateAsync(CreateTaskListDto createDto, CancellationToken cancellationToken = default)
         {
             var taskList = _mapper.Map<TaskList.Models.Domain.TaskList>(createDto);
             _context.TaskLists.Add(taskList);
@@ -63,7 +62,7 @@ namespace TaskList.Repositories.Classes
             return _mapper.Map<TaskListDto>(taskList);
         }
 
-        public async Task UpdateTaskListAsync(int id, UpdateTaskListDto updateDto, CancellationToken cancellationToken = default)
+        public async Task UpdateAsync(int id, UpdateTaskListDto updateDto, CancellationToken cancellationToken = default)
         {
             var taskList = await _context.TaskLists.FindAsync(id, cancellationToken);
             if (taskList == null || taskList.IsDeleted)
@@ -74,11 +73,11 @@ namespace TaskList.Repositories.Classes
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task DeleteTaskListAsync(int id, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
         {
             var taskList = await _context.TaskLists
                 .Include(tl => tl.Tasks)
-                .FirstOrDefaultAsync(tl => tl.Id == id && !tl.IsDeleted, cancellationToken);
+                .FirstOrDefaultAsync(tl => tl.Id == id, cancellationToken);
 
             if (taskList == null)
                 throw new KeyNotFoundException("Task list not found");
@@ -94,7 +93,7 @@ namespace TaskList.Repositories.Classes
 
             await _context.SaveChangesAsync(cancellationToken);
         }
-        public async Task<string> UpdateTaskListImageAsync(int id, IFormFile imageFile, CancellationToken cancellationToken = default)
+        public async Task<string> UpdateImageAsync(int id, IFormFile imageFile, CancellationToken cancellationToken = default)
         {
             var taskList = await _context.TaskLists.FindAsync(id, cancellationToken);
             if (taskList == null || taskList.IsDeleted)
@@ -126,7 +125,7 @@ namespace TaskList.Repositories.Classes
             }
         }
 
-        public async Task RemoveTaskListImageAsync(int id, CancellationToken cancellationToken = default)
+        public async Task RemoveImageAsync(int id, CancellationToken cancellationToken = default)
         {
             var taskList = await _context.TaskLists.FindAsync(id, cancellationToken);
             if (taskList == null || taskList.IsDeleted)

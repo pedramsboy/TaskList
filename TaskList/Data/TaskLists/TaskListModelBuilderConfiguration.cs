@@ -15,9 +15,9 @@ namespace TaskList.Data.TaskLists
 
             builder.Entity<TaskList.Models.Domain.TaskList>()
             .Property(tl => tl.Name)
-            .HasColumnType("Nvarchar(100)")
             .IsRequired()
-            .IsUnicode();
+            .IsUnicode(true)
+            .HasMaxLength(100);
         }
 
     }

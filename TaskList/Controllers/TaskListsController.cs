@@ -22,7 +22,7 @@ namespace TaskList.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskListDto>>> GetAllTaskLists(CancellationToken cancellationToken)
         {
-            var taskLists = await _taskListService.GetAllTaskListsAsync(cancellationToken);
+            var taskLists = await _taskListService.GetAllAsync(cancellationToken);
             return Ok(taskLists);
         }
 
@@ -30,7 +30,7 @@ namespace TaskList.Controllers
         public async Task<ActionResult<TaskListDto>> GetTaskList(int id, CancellationToken cancellationToken)
         {
 
-            var taskList = await _taskListService.GetTaskListByIdAsync(id, cancellationToken);
+            var taskList = await _taskListService.GetByIdAsync(id, cancellationToken);
             return Ok(taskList);
 
         }
@@ -38,7 +38,7 @@ namespace TaskList.Controllers
         [HttpPost]
         public async Task<ActionResult<TaskListDto>> CreateTaskList(CreateTaskListDto createDto, CancellationToken cancellationToken)
         {
-            var taskList = await _taskListService.CreateTaskListAsync(createDto, cancellationToken);
+            var taskList = await _taskListService.CreateAsync(createDto, cancellationToken);
             return CreatedAtAction(nameof(GetTaskList), new { id = taskList.Id }, taskList);
         }
 
@@ -46,7 +46,7 @@ namespace TaskList.Controllers
         public async Task<IActionResult> UpdateTaskList(int id, UpdateTaskListDto updateDto, CancellationToken cancellationToken)
         {
 
-            await _taskListService.UpdateTaskListAsync(id, updateDto, cancellationToken);
+            await _taskListService.UpdateAsync(id, updateDto, cancellationToken);
             return NoContent();
 
         }
@@ -55,7 +55,7 @@ namespace TaskList.Controllers
         public async Task<IActionResult> DeleteTaskList(int id, CancellationToken cancellationToken)
         {
 
-            await _taskListService.DeleteTaskListAsync(id, cancellationToken);
+            await _taskListService.DeleteAsync(id, cancellationToken);
             return NoContent();
 
         }
@@ -74,7 +74,7 @@ namespace TaskList.Controllers
                     return BadRequest("No image file provided");
                 }
 
-                var imageUrl = await _taskListService.UpdateTaskListImageAsync(id, uploadDto.Image, cancellationToken);
+                var imageUrl = await _taskListService.UpdateImageAsync(id, uploadDto.Image, cancellationToken);
                 return Ok(new ImageUploadResponse { ImageUrl = imageUrl });
             }
             catch (KeyNotFoundException ex)
@@ -99,7 +99,7 @@ namespace TaskList.Controllers
         {
             try
             {
-                await _taskListService.RemoveTaskListImageAsync(id, cancellationToken);
+                await _taskListService.RemoveImageAsync(id, cancellationToken);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
